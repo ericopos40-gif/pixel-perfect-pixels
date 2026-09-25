@@ -16,10 +16,13 @@ import { Route as BookingRouteImport } from './routes/booking'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as WorkspaceIndexRouteImport } from './routes/workspace.index'
 import { Route as WorkspaceRoleRouteImport } from './routes/workspace.$role'
+import { Route as WorkspaceRoleIndexRouteImport } from './routes/workspace.$role.index'
+import { Route as WorkspaceRoleModuleRouteImport } from './routes/workspace.$role.$module'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -56,6 +59,11 @@ const GalleryRoute = GalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
@@ -76,6 +84,16 @@ const WorkspaceRoleRoute = WorkspaceRoleRouteImport.update({
   path: '/workspace/$role',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkspaceRoleIndexRoute = WorkspaceRoleIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => WorkspaceRoleRoute,
+} as any)
+const WorkspaceRoleModuleRoute = WorkspaceRoleModuleRouteImport.update({
+  id: '/$module',
+  path: '/$module',
+  getParentRoute: () => WorkspaceRoleRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -85,10 +103,13 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
   '/team': typeof TeamRoute
-  '/workspace/$role': typeof WorkspaceRoleRoute
+  '/workspace/$role': typeof WorkspaceRoleRouteWithChildren
   '/workspace/': typeof WorkspaceIndexRoute
+  '/workspace/$role/$module': typeof WorkspaceRoleModuleRoute
+  '/workspace/$role/': typeof WorkspaceRoleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,10 +119,12 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
   '/team': typeof TeamRoute
-  '/workspace/$role': typeof WorkspaceRoleRoute
   '/workspace': typeof WorkspaceIndexRoute
+  '/workspace/$role/$module': typeof WorkspaceRoleModuleRoute
+  '/workspace/$role': typeof WorkspaceRoleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -112,10 +135,13 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
   '/team': typeof TeamRoute
-  '/workspace/$role': typeof WorkspaceRoleRoute
+  '/workspace/$role': typeof WorkspaceRoleRouteWithChildren
   '/workspace/': typeof WorkspaceIndexRoute
+  '/workspace/$role/$module': typeof WorkspaceRoleModuleRoute
+  '/workspace/$role/': typeof WorkspaceRoleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,10 +153,13 @@ export interface FileRouteTypes {
     | '/contact'
     | '/events'
     | '/gallery'
+    | '/login'
     | '/services'
     | '/team'
     | '/workspace/$role'
     | '/workspace/'
+    | '/workspace/$role/$module'
+    | '/workspace/$role/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,10 +169,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/events'
     | '/gallery'
+    | '/login'
     | '/services'
     | '/team'
-    | '/workspace/$role'
     | '/workspace'
+    | '/workspace/$role/$module'
+    | '/workspace/$role'
   id:
     | '__root__'
     | '/'
@@ -153,10 +184,13 @@ export interface FileRouteTypes {
     | '/contact'
     | '/events'
     | '/gallery'
+    | '/login'
     | '/services'
     | '/team'
     | '/workspace/$role'
     | '/workspace/'
+    | '/workspace/$role/$module'
+    | '/workspace/$role/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -167,9 +201,10 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   ServicesRoute: typeof ServicesRoute
   TeamRoute: typeof TeamRoute
-  WorkspaceRoleRoute: typeof WorkspaceRoleRoute
+  WorkspaceRoleRoute: typeof WorkspaceRoleRouteWithChildren
   WorkspaceIndexRoute: typeof WorkspaceIndexRoute
 }
 
@@ -224,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
@@ -252,8 +294,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceRoleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workspace/$role/': {
+      id: '/workspace/$role/'
+      path: '/'
+      fullPath: '/workspace/$role/'
+      preLoaderRoute: typeof WorkspaceRoleIndexRouteImport
+      parentRoute: typeof WorkspaceRoleRoute
+    }
+    '/workspace/$role/$module': {
+      id: '/workspace/$role/$module'
+      path: '/$module'
+      fullPath: '/workspace/$role/$module'
+      preLoaderRoute: typeof WorkspaceRoleModuleRouteImport
+      parentRoute: typeof WorkspaceRoleRoute
+    }
   }
 }
+
+interface WorkspaceRoleRouteChildren {
+  WorkspaceRoleModuleRoute: typeof WorkspaceRoleModuleRoute
+  WorkspaceRoleIndexRoute: typeof WorkspaceRoleIndexRoute
+}
+
+const WorkspaceRoleRouteChildren: WorkspaceRoleRouteChildren = {
+  WorkspaceRoleModuleRoute: WorkspaceRoleModuleRoute,
+  WorkspaceRoleIndexRoute: WorkspaceRoleIndexRoute,
+}
+
+const WorkspaceRoleRouteWithChildren = WorkspaceRoleRoute._addFileChildren(
+  WorkspaceRoleRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -263,9 +333,10 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  LoginRoute: LoginRoute,
   ServicesRoute: ServicesRoute,
   TeamRoute: TeamRoute,
-  WorkspaceRoleRoute: WorkspaceRoleRoute,
+  WorkspaceRoleRoute: WorkspaceRoleRouteWithChildren,
   WorkspaceIndexRoute: WorkspaceIndexRoute,
 }
 export const routeTree = rootRouteImport

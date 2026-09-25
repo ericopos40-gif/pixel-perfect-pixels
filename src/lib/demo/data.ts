@@ -707,3 +707,361 @@ export const campaigns: Campaign[] = [
     state: "Scheduled",
   },
 ];
+
+// ============================================================================
+// CLINICAL DATA FOR GOLDEN PATIENT (Amina Wanjiku - PAT-005)
+// ============================================================================
+// This comprehensive demonstration record shows the complete workflow:
+// Receptionist → Nurse → Dentist → Lab → Pharmacy → Accountant → Patient
+
+import type {
+  Vitals,
+  DentalChart,
+  Diagnosis,
+  TreatmentPlan,
+  Prescription,
+  LabOrder,
+  PatientVital,
+  AuditLog,
+  Notification,
+  Receipt,
+} from "./types";
+
+/** Amina's appointment for today (the demo demo_today case). */
+export const aminaAppointmentId = "APT-1005";
+
+/** Amina's vitals recorded by nurse Esther. */
+export const vitalSigns: Vitals = {
+  id: "VIT-001",
+  appointmentId: aminaAppointmentId,
+  patientId: "PAT-005",
+  recordedBy: "STF-011", // Esther Njoroge (Nurse)
+  date: DEMO_TODAY,
+  time: "12:45 PM",
+  bloodPressure: "118/76",
+  heartRate: 72,
+  temperature: 36.8,
+  respiratoryRate: 16,
+  oxygenSaturation: 98,
+  weight: 62,
+  height: 168,
+  painScore: 3,
+  notes: "Patient reports mild discomfort in upper left quadrant. Vitals normal.",
+};
+
+/** Amina's dental chart showing conditions on specific teeth. */
+export const aminaDentalChart: DentalChart = {
+  id: "DCH-001",
+  patientId: "PAT-005",
+  teeth: {
+    "16": { toothNumber: 16, condition: "CARIES", notes: "Class II caries - buccal surface", lastUpdated: DEMO_TODAY },
+    "26": { toothNumber: 26, condition: "FILLED", notes: "Composite restoration - 2 years old", lastUpdated: "2023-09-15" },
+    "36": { toothNumber: 36, condition: "HEALTHY", notes: "No issues noted", lastUpdated: DEMO_TODAY },
+    "46": { toothNumber: 46, condition: "HEALTHY", notes: "No issues noted", lastUpdated: DEMO_TODAY },
+    "11": { toothNumber: 11, condition: "HEALTHY", notes: "Good condition", lastUpdated: DEMO_TODAY },
+    "12": { toothNumber: 12, condition: "HEALTHY", notes: "Good condition", lastUpdated: DEMO_TODAY },
+    "17": { toothNumber: 17, condition: "HEALTHY", notes: "No issues", lastUpdated: DEMO_TODAY },
+    "27": { toothNumber: 27, condition: "HEALTHY", notes: "No issues", lastUpdated: DEMO_TODAY },
+    "37": { toothNumber: 37, condition: "HEALTHY", notes: "No issues", lastUpdated: DEMO_TODAY },
+    "47": { toothNumber: 47, condition: "HEALTHY", notes: "No issues", lastUpdated: DEMO_TODAY },
+  },
+  lastUpdated: DEMO_TODAY,
+};
+
+/** Amina's diagnoses from Dr. Sarah Kimani. */
+export const aminaDiagnoses: Diagnosis[] = [
+  {
+    id: "DIA-001",
+    patientId: "PAT-005",
+    date: DEMO_TODAY,
+    dentistId: "STF-002", // Dr. Sarah Kimani
+    toothNumber: 16,
+    icd10Code: "K02.1",
+    condition: "Caries of permanent tooth, occlusal surface",
+    description: "Class II caries on buccal surface of upper left second molar. Moderate depth, no pulp involvement.",
+    status: "ACTIVE",
+  },
+  {
+    id: "DIA-002",
+    patientId: "PAT-005",
+    date: DEMO_TODAY,
+    dentistId: "STF-002",
+    condition: "Mild gingivitis - localized",
+    description: "Mild inflammation on upper left buccal gingiva. Likely related to plaque accumulation.",
+    status: "ACTIVE",
+  },
+];
+
+/** Amina's treatment plan for the composite restoration. */
+export const aminaTreatmentPlans: TreatmentPlan[] = [
+  {
+    id: "TP-001",
+    patientId: "PAT-005",
+    dentistId: "STF-002", // Dr. Sarah Kimani
+    createdDate: DEMO_TODAY,
+    plannedStartDate: DEMO_TODAY,
+    toothNumber: 16,
+    procedure: "Composite Resin Filling",
+    description: "Class II composite filling for caries on tooth 16. Single visit treatment.",
+    estimatedCost: 5800,
+    estimatedSessions: 1,
+    currentSession: 1,
+    status: "IN_PROGRESS",
+    notes: "Patient agreed to treatment. No anesthesia complications. Using flowable composite.",
+  },
+];
+
+/** Amina's prescriptions from Dr. Sarah Kimani. */
+export const aminaPrescriptions: Prescription[] = [
+  {
+    id: "PRX-001",
+    prescriptionNumber: "PRX-2025-0521",
+    patientId: "PAT-005",
+    dentistId: "STF-002", // Dr. Sarah Kimani
+    date: DEMO_TODAY,
+    medication: "Ibuprofen",
+    dosage: "400 mg",
+    frequency: "Every 6-8 hours as needed",
+    duration: "3 days",
+    route: "Oral",
+    instructions: "Take after meals if possible. Do not exceed 1200 mg per day. Note: patient is allergic to Ibuprofen - use Paracetamol instead.",
+    status: "ISSUED",
+  },
+  {
+    id: "PRX-002",
+    prescriptionNumber: "PRX-2025-0522",
+    patientId: "PAT-005",
+    dentistId: "STF-002",
+    date: DEMO_TODAY,
+    medication: "Paracetamol (Acetaminophen)",
+    dosage: "500 mg",
+    frequency: "Every 6-8 hours as needed",
+    duration: "3 days",
+    route: "Oral",
+    instructions: "Take for pain management post-treatment. Can be combined with topical antiseptic mouthwash.",
+    status: "ISSUED",
+  },
+  {
+    id: "PRX-003",
+    prescriptionNumber: "PRX-2025-0523",
+    patientId: "PAT-005",
+    dentistId: "STF-002",
+    date: DEMO_TODAY,
+    medication: "Chlorhexidine Mouthwash",
+    dosage: "0.12%",
+    frequency: "Twice daily",
+    duration: "7 days",
+    route: "Rinse",
+    instructions: "Rinse for 30 seconds twice daily (morning and evening). Helps prevent post-operative infection and promotes healing.",
+    status: "ISSUED",
+  },
+];
+
+/** Amina's laboratory order for culture and sensitivity. */
+export const aminaLabOrders: LabOrder[] = [
+  {
+    id: "LAB-001",
+    labOrderNumber: "LAB-2025-0089",
+    patientId: "PAT-005",
+    dentistId: "STF-002", // Dr. Sarah Kimani
+    createdDate: DEMO_TODAY,
+    testType: "Culture & Sensitivity - Periodontal",
+    toothNumber: 16,
+    priority: "ROUTINE",
+    status: "RESULT_READY",
+    collectedDate: DEMO_TODAY,
+    resultDate: DEMO_TODAY,
+    result: "Streptococcus mutans: Sensitive to Amoxicillin, Penicillin. Actinomyces sp: Sensitive to Amoxicillin.",
+    notes: "Sample collected during treatment. Results indicate standard oral flora. No resistant organisms identified.",
+  },
+];
+
+/** Amina's updated invoices with treatment charges. */
+export const aminaInvoices: Invoice[] = [
+  {
+    id: "INV-05-UPDATE",
+    number: "INV-2025-0143",
+    patientId: "PAT-005",
+    date: "2025-09-20",
+    dueDate: "2025-09-27",
+    items: [
+      { description: "Composite Resin Filling (Tooth 16)", quantity: 1, unitPrice: 5800 },
+      { description: "Periodontal Culture & Sensitivity", quantity: 1, unitPrice: 2500 },
+      { description: "Chlorhexidine Mouthwash (1 bottle)", quantity: 1, unitPrice: 800 },
+    ],
+    status: "PAID",
+    amountPaid: 9100,
+  },
+];
+
+/** Amina's payment record. */
+export const aminaPayment: Payment = {
+  id: "PMT-04",
+  invoiceNumber: "INV-2025-0143",
+  patientId: "PAT-005",
+  date: DEMO_TODAY,
+  amount: 9100,
+  method: "M-Pesa",
+  reference: "AMN4KY2L9",
+};
+
+/** Amina's receipt. */
+export const aminaReceipt: Receipt = {
+  id: "RCP-001",
+  receiptNumber: "RCP-2025-0521",
+  invoiceNumber: "INV-2025-0143",
+  patientId: "PAT-005",
+  date: DEMO_TODAY,
+  amount: 9100,
+  paymentMethod: "M-Pesa",
+  reference: "AMN4KY2L9",
+  notes: "Full payment received. Thank you for visiting BrightSmile.",
+};
+
+/** Audit log entries for Amina's appointment. */
+export const aminaAuditLogs: AuditLog[] = [
+  {
+    id: "AUD-001",
+    timestamp: "2025-09-20T08:00:00Z",
+    userId: "STF-006",
+    userRole: "RECEPTIONIST",
+    action: "APPOINTMENT_CREATED",
+    entityType: "Appointment",
+    entityId: aminaAppointmentId,
+    entityName: "Amina Wanjiku - Cosmetic Consultation",
+    details: "Appointment scheduled with Dr. Sarah Kimani",
+  },
+  {
+    id: "AUD-002",
+    timestamp: "2025-09-20T12:50:00Z",
+    userId: "STF-011",
+    userRole: "NURSE",
+    action: "VITALS_RECORDED",
+    entityType: "Vitals",
+    entityId: "VIT-001",
+    entityName: "Amina Wanjiku - Vitals",
+    details: "Nurse Esther recorded vitals. Patient marked ready for dentist.",
+  },
+  {
+    id: "AUD-003",
+    timestamp: "2025-09-20T13:05:00Z",
+    userId: "STF-002",
+    userRole: "DENTIST",
+    action: "EXAMINATION_COMPLETED",
+    entityType: "Appointment",
+    entityId: aminaAppointmentId,
+    entityName: "Amina Wanjiku - Clinical Exam",
+    details: "Dr. Sarah identified caries on tooth 16. Diagnosed gingivitis.",
+  },
+  {
+    id: "AUD-004",
+    timestamp: "2025-09-20T13:10:00Z",
+    userId: "STF-002",
+    userRole: "DENTIST",
+    action: "TREATMENT_PLAN_CREATED",
+    entityType: "TreatmentPlan",
+    entityId: "TP-001",
+    entityName: "Composite Filling - Tooth 16",
+    details: "Treatment plan created. Patient consented to procedure.",
+  },
+  {
+    id: "AUD-005",
+    timestamp: "2025-09-20T13:15:00Z",
+    userId: "STF-002",
+    userRole: "DENTIST",
+    action: "DENTAL_CHART_UPDATED",
+    entityType: "DentalChart",
+    entityId: "DCH-001",
+    entityName: "Amina Wanjiku - Dental Chart",
+    details: "Tooth 16 condition recorded as CARIES. Chart updated.",
+  },
+  {
+    id: "AUD-006",
+    timestamp: "2025-09-20T13:45:00Z",
+    userId: "STF-002",
+    userRole: "DENTIST",
+    action: "PRESCRIPTION_ISSUED",
+    entityType: "Prescription",
+    entityId: "PRX-001",
+    entityName: "Post-treatment Pain Management",
+    details: "3 prescriptions issued: Paracetamol, Chlorhexidine mouthwash, post-op care.",
+  },
+  {
+    id: "AUD-007",
+    timestamp: "2025-09-20T13:50:00Z",
+    userId: "STF-012",
+    userRole: "LAB_TECHNICIAN",
+    action: "LAB_ORDER_PROCESSED",
+    entityType: "LabOrder",
+    entityId: "LAB-001",
+    entityName: "Culture & Sensitivity - Periodontal",
+    details: "Brian collected sample. Culture results returned same day.",
+  },
+  {
+    id: "AUD-008",
+    timestamp: "2025-09-20T14:30:00Z",
+    userId: "STF-008",
+    userRole: "ACCOUNTANT",
+    action: "INVOICE_CREATED",
+    entityType: "Invoice",
+    entityId: "INV-05-UPDATE",
+    entityName: "INV-2025-0143 - Amina Wanjiku",
+    details: "Invoice created with treatment charges. Total: KSh 9,100.",
+  },
+  {
+    id: "AUD-009",
+    timestamp: "2025-09-20T15:00:00Z",
+    userId: "STF-008",
+    userRole: "ACCOUNTANT",
+    action: "PAYMENT_RECORDED",
+    entityType: "Payment",
+    entityId: "PMT-04",
+    entityName: "Payment - INV-2025-0143",
+    details: "Payment of KSh 9,100 received via M-Pesa. Invoice marked PAID.",
+  },
+  {
+    id: "AUD-010",
+    timestamp: "2025-09-20T15:05:00Z",
+    userId: "STF-008",
+    userRole: "ACCOUNTANT",
+    action: "RECEIPT_GENERATED",
+    entityType: "Receipt",
+    entityId: "RCP-001",
+    entityName: "Receipt - RCP-2025-0521",
+    details: "Receipt generated and available for patient download.",
+  },
+];
+
+/** Sample notifications for the clinic. */
+export const notifications: Notification[] = [
+  {
+    id: "NTF-001",
+    userId: "PAT-005",
+    type: "APPOINTMENT_CONFIRMED",
+    title: "Appointment Confirmed",
+    message: "Your appointment with Dr. Sarah Kimani is confirmed for today at 1:00 PM",
+    timestamp: "2025-09-20T08:05:00Z",
+    read: true,
+    relatedEntity: { type: "Appointment", id: aminaAppointmentId },
+  },
+  {
+    id: "NTF-002",
+    userId: "PAT-005",
+    type: "PAYMENT_RECEIVED",
+    title: "Payment Received",
+    message: "We received your payment of KSh 9,100 for invoice INV-2025-0143",
+    timestamp: "2025-09-20T15:01:00Z",
+    read: false,
+    relatedEntity: { type: "Invoice", id: "INV-05-UPDATE" },
+  },
+  {
+    id: "NTF-003",
+    userId: "STF-002",
+    type: "LAB_RESULT_READY",
+    title: "Lab Result Ready",
+    message: "Culture & Sensitivity results are ready for patient PAT-005 (Amina Wanjiku)",
+    timestamp: "2025-09-20T13:50:00Z",
+    read: true,
+    relatedEntity: { type: "LabOrder", id: "LAB-001" },
+  },
+];
