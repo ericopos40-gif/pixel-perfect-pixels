@@ -1,247 +1,192 @@
-import { PanelCard } from "@/components/shared/PanelCard";
-import { StatCard } from "@/components/shared/StatCard";
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import {
-  Globe,
-  Users,
-  Eye,
-  TrendingUp,
+  BarChart3,
+  BellRing,
+  CalendarDays,
+  CheckCircle2,
+  Clock3,
+  Edit3,
+  FileCheck2,
   FileText,
   Image,
-  Calendar,
   Mail,
-  Activity,
+  Megaphone,
+  Newspaper,
+  Save,
+  Send,
+  Settings2,
+  Upload,
+  Users,
+  Zap,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { TrendLineChart } from "@/components/dashboards/charts";
+import { campaigns, clinicEvents, contentOverview } from "@/lib/demo/data";
+import campaignImage from "@/assets/campaign-smiles.jpg";
+import teamImage from "@/assets/article-dental-team.jpg";
+import childImage from "@/assets/article-child-checkup.jpg";
+
+const stats = [
+  { label: "Published Articles", value: "24", growth: "12%", icon: Newspaper, tone: "bg-brand-soft text-brand" },
+  { label: "Active Campaigns", value: "4", growth: "33%", icon: Megaphone, tone: "bg-violet-soft text-violet" },
+  { label: "Upcoming Events", value: "8", growth: "14%", icon: CalendarDays, tone: "bg-success-soft text-success" },
+  { label: "Gallery Photos", value: "186", growth: "22%", icon: Image, tone: "bg-info-soft text-info" },
+  { label: "Unread Messages", value: "12", growth: "71%", icon: Mail, tone: "bg-violet-soft text-violet" },
+  { label: "Newsletter Subscribers", value: "1,284", growth: "18%", icon: Users, tone: "bg-teal-soft text-teal" },
+];
+
+const controls = ["Show Blog", "Show Events", "Show Gallery", "Show Campaign Banner", "Online Appointment Button", "Contact Form", "Newsletter Signup", "Social Links"];
+const sections = ["Hero Banner", "Latest News", "Campaigns", "Upcoming Events", "Photo Gallery", "Contact Panel", "Footer"];
+
+const quickActions = [
+  { label: "New Article", module: "news", icon: FileText, tone: "bg-primary" },
+  { label: "New Campaign", module: "campaigns", icon: Megaphone, tone: "bg-teal" },
+  { label: "New Event", module: "events", icon: CalendarDays, tone: "bg-violet" },
+  { label: "Upload Photos", module: "gallery", icon: Upload, tone: "bg-info" },
+  { label: "View Messages", module: "messages", icon: Mail, tone: "bg-brand" },
+  { label: "Edit Homepage", module: "pages", icon: Edit3, tone: "bg-success" },
+] as const;
 
 export function WebsiteAdminDashboard() {
-  // Demo website analytics
-  const stats = {
-    visitors: 12450,
-    pageViews: 45230,
-    avgSessionTime: "3:45",
-    bounceRate: "42%",
-    totalPages: 24,
-    blogPosts: 18,
-    galleryImages: 156,
-    upcomingEvents: 3,
-    contactMessages: 12,
-    newsletterSubscribers: 1250,
+  const [siteControls, setSiteControls] = useState<Record<string, boolean>>(() => Object.fromEntries(controls.map((item) => [item, true])));
+  const [homepageSections, setHomepageSections] = useState<Record<string, boolean>>(() => Object.fromEntries(sections.map((item) => [item, true])));
+
+  const toggle = (setter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>, key: string) => {
+    setter((current) => ({ ...current, [key]: !current[key] }));
   };
 
-  const recentActivity = [
-    {
-      action: "New blog post published",
-      detail: "5 Tips for Healthy Teeth",
-      time: "2 hours ago",
-      icon: FileText,
-      color: "text-blue-600",
-    },
-    {
-      action: "Contact form submission",
-      detail: "New inquiry from potential patient",
-      time: "4 hours ago",
-      icon: Mail,
-      color: "text-green-600",
-    },
-    {
-      action: "Gallery updated",
-      detail: "8 new images added to clinic gallery",
-      time: "Yesterday",
-      icon: Image,
-      color: "text-purple-600",
-    },
-    {
-      action: "Event created",
-      detail: "Dental Health Awareness Week",
-      time: "2 days ago",
-      icon: Calendar,
-      color: "text-orange-600",
-    },
-  ];
-
-  const topPages = [
-    { path: "/", views: 8240, title: "Home Page" },
-    { path: "/services", views: 6150, title: "Services" },
-    { path: "/about", views: 4820, title: "About Us" },
-    { path: "/blog", views: 3950, title: "Blog" },
-    { path: "/contact", views: 2890, title: "Contact" },
-  ];
-
   return (
-    <div className="space-y-6">
-      {/* Key Metrics */}
-      <div className="grid grid-cols-4 gap-6">
-        <StatCard
-          title="Website Visitors"
-          value={stats.visitors.toLocaleString()}
-          subtitle="This month"
-          icon={Users}
-          trend="+15% vs last month"
-        />
-        <StatCard
-          title="Page Views"
-          value={stats.pageViews.toLocaleString()}
-          subtitle="Total impressions"
-          icon={Eye}
-          trend="+22% vs last month"
-        />
-        <StatCard
-          title="Avg Session Time"
-          value={stats.avgSessionTime}
-          subtitle="Minutes per visit"
-          icon={Activity}
-          trend="+8% vs last month"
-        />
-        <StatCard
-          title="Bounce Rate"
-          value={stats.bounceRate}
-          subtitle="Single page visits"
-          icon={TrendingUp}
-          trend="-5% vs last month"
-        />
-      </div>
-
-      {/* Content Overview */}
-      <div className="grid grid-cols-2 gap-6">
-        <PanelCard title="Content Summary" subtitle="Overview of website content">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-blue-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold">Pages</span>
-              </div>
-              <div className="text-2xl font-bold text-blue-600">{stats.totalPages}</div>
-              <div className="text-sm text-gray-600">Active pages</div>
-            </div>
-
-            <div className="bg-green-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <FileText className="w-5 h-5 text-green-600" />
-                <span className="font-semibold">Blog Posts</span>
-              </div>
-              <div className="text-2xl font-bold text-green-600">{stats.blogPosts}</div>
-              <div className="text-sm text-gray-600">Published articles</div>
-            </div>
-
-            <div className="bg-purple-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Image className="w-5 h-5 text-purple-600" />
-                <span className="font-semibold">Gallery</span>
-              </div>
-              <div className="text-2xl font-bold text-purple-600">{stats.galleryImages}</div>
-              <div className="text-sm text-gray-600">Total images</div>
-            </div>
-
-            <div className="bg-orange-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Calendar className="w-5 h-5 text-orange-600" />
-                <span className="font-semibold">Events</span>
-              </div>
-              <div className="text-2xl font-bold text-orange-600">{stats.upcomingEvents}</div>
-              <div className="text-sm text-gray-600">Upcoming events</div>
-            </div>
-          </div>
-        </PanelCard>
-
-        <PanelCard title="Engagement Metrics" subtitle="Visitor interaction statistics">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-red-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Mail className="w-5 h-5 text-red-600" />
-                <span className="font-semibold">Messages</span>
-              </div>
-              <div className="text-2xl font-bold text-red-600">{stats.contactMessages}</div>
-              <div className="text-sm text-gray-600">
-                <Badge className="bg-red-100 text-red-800">New</Badge>
-              </div>
-            </div>
-
-            <div className="bg-indigo-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Users className="w-5 h-5 text-indigo-600" />
-                <span className="font-semibold">Subscribers</span>
-              </div>
-              <div className="text-2xl font-bold text-indigo-600">{stats.newsletterSubscribers}</div>
-              <div className="text-sm text-gray-600">Newsletter list</div>
-            </div>
-
-            <div className="bg-teal-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Globe className="w-5 h-5 text-teal-600" />
-                <span className="font-semibold">Reach</span>
-              </div>
-              <div className="text-2xl font-bold text-teal-600">24.5K</div>
-              <div className="text-sm text-gray-600">Unique visitors</div>
-            </div>
-
-            <div className="bg-pink-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-5 h-5 text-pink-600" />
-                <span className="font-semibold">Growth</span>
-              </div>
-              <div className="text-2xl font-bold text-pink-600">+18%</div>
-              <div className="text-sm text-gray-600">Month over month</div>
-            </div>
-          </div>
-        </PanelCard>
-      </div>
-
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Recent Activity */}
-        <PanelCard title="Recent Activity" subtitle="Latest website updates">
-          <div className="space-y-3">
-            {recentActivity.map((activity, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                <activity.icon className={`w-5 h-5 ${activity.color} mt-0.5`} />
-                <div className="flex-1">
-                  <div className="font-medium text-sm">{activity.action}</div>
-                  <div className="text-sm text-gray-600">{activity.detail}</div>
-                  <div className="text-xs text-gray-400 mt-1">{activity.time}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </PanelCard>
-
-        {/* Top Pages */}
-        <PanelCard title="Top Pages" subtitle="Most visited pages this month">
-          <div className="space-y-2">
-            {topPages.map((page, idx) => (
-              <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex-1">
-                  <div className="font-medium">{page.title}</div>
-                  <div className="text-sm text-gray-500">{page.path}</div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold text-blue-600">{page.views.toLocaleString()}</div>
-                  <div className="text-xs text-gray-500">views</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </PanelCard>
-      </div>
-
-      {/* Quick Actions */}
-      <PanelCard title="Quick Actions" subtitle="Common website management tasks">
-        <div className="grid grid-cols-4 gap-4">
-          {[
-            { label: "New Blog Post", icon: FileText, color: "bg-blue-100 text-blue-600" },
-            { label: "Add Event", icon: Calendar, color: "bg-green-100 text-green-600" },
-            { label: "Upload Images", icon: Image, color: "bg-purple-100 text-purple-600" },
-            { label: "View Messages", icon: Mail, color: "bg-red-100 text-red-600" },
-          ].map((action, idx) => (
-            <button
-              key={idx}
-              className="p-6 border-2 border-dashed rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
-            >
-              <action.icon className={`w-8 h-8 mx-auto mb-2 ${action.color}`} />
-              <div className="text-sm font-medium">{action.label}</div>
-            </button>
-          ))}
+    <div className="space-y-3 pb-20">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-heading">Good morning, Admin! <span aria-hidden="true">👋</span></h1>
+          <p className="text-xs text-brand">Here&apos;s what&apos;s happening with your BrightSmile Dental Care Centre website.</p>
         </div>
-      </PanelCard>
+        <Button variant="outline" className="h-10 bg-card"><CalendarDays className="size-4" /> Sat, Sep 20, 2025</Button>
+      </div>
+
+      <div className="grid gap-3 xl:grid-cols-[minmax(0,3fr)_310px]">
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 xl:grid-cols-6">
+            {stats.map((item) => (
+              <div key={item.label} className="min-h-28 rounded-lg border border-border bg-card p-3 shadow-card">
+                <div className="flex items-start gap-2.5">
+                  <span className={`flex size-10 shrink-0 items-center justify-center rounded-full ${item.tone}`}><item.icon className="size-5" /></span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] leading-tight font-semibold text-heading">{item.label}</p>
+                    <p className="mt-2 text-xl font-bold text-heading">{item.value}</p>
+                    <p className="mt-1 text-[10px] font-semibold text-success">↑ {item.growth}</p>
+                    <p className="text-[9px] text-muted-foreground">vs. last month</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-[1.25fr_1fr]">
+            <AdminPanel title="Content Overview" icon={BarChart3} action={<ChartLegend />}>
+              <TrendLineChart data={contentOverview} height={186} series={[
+                { key: "articles", label: "Articles", color: "var(--chart-1)" },
+                { key: "events", label: "Events", color: "var(--chart-6)" },
+                { key: "campaigns", label: "Campaigns", color: "var(--chart-3)" },
+              ]} />
+            </AdminPanel>
+            <AdminPanel title="Recent Activity" icon={Clock3} action={<SmallLink to="activity" label="View All" />}>
+              <div className="divide-y divide-border">
+                {[
+                  ["2 min ago", "Published: 5 Daily Habits for...", "Admin"],
+                  ["18 min ago", "Updated: Healthy Smiles for All...", "Admin"],
+                  ["1 hour ago", "Added: Children’s Dental Check-up Day", "Admin"],
+                  ["3 hours ago", "Uploaded 12 gallery images", "Admin"],
+                  ["5 hours ago", "New message from Mary Wanjiku", "Admin"],
+                ].map(([time, activity, by], index) => (
+                  <div key={activity} className="grid grid-cols-[70px_1fr_40px] items-center gap-2 py-2 text-[10px]">
+                    <span className="text-muted-foreground">{time}</span>
+                    <span className="truncate font-medium text-heading"><span className={`mr-2 inline-block size-2 rounded-full ${index % 2 ? "bg-violet" : "bg-brand"}`} />{activity}</span>
+                    <span className="text-right text-muted-foreground">{by}</span>
+                  </div>
+                ))}
+              </div>
+            </AdminPanel>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-[1.1fr_1fr]">
+            <AdminPanel title="Quick Content Actions" icon={Zap}>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {quickActions.map((action) => (
+                  <Button key={action.label} asChild className={`h-14 flex-col gap-1 ${action.tone}`}>
+                    <Link to="/workspace/$role/$module" params={{ role: "website", module: action.module }}>
+                      <action.icon className="size-4" /> <span className="text-[11px]">+ {action.label}</span>
+                    </Link>
+                  </Button>
+                ))}
+              </div>
+            </AdminPanel>
+            <AdminPanel title="Content Approval / Drafts" icon={FileCheck2} action={<SmallLink to="news" label="View All" />}>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {[["Draft Articles", "3"], ["Draft Campaigns", "1"], ["Draft Events", "2"], ["Pending Approval", "5"]].map(([label, value]) => (
+                  <Link key={label} to="/workspace/$role/$module" params={{ role: "website", module: "news" }} className="rounded-md border border-border p-3 hover:border-brand">
+                    <p className="text-[10px] font-medium text-brand">{label}</p><p className="mt-3 text-xl font-bold text-heading">{value}</p><p className="mt-2 text-[9px] text-brand">View →</p>
+                  </Link>
+                ))}
+              </div>
+            </AdminPanel>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-[1.05fr_1.4fr]">
+            <AdminPanel title="Upcoming Events" icon={CalendarDays} action={<SmallLink to="events" label="View All" />}>
+              <div className="overflow-x-auto"><table className="w-full min-w-96 text-[10px]"><thead><tr className="border-b text-left text-muted-foreground"><th className="pb-2">Event Name</th><th>Date</th><th>Registrations</th><th>Status</th></tr></thead><tbody>{clinicEvents.map((event) => <tr key={event.id} className="border-b border-border last:border-0"><td className="py-2 font-medium text-heading">{event.title}</td><td>{event.date}</td><td>{event.registrations} / {event.capacity}</td><td><span className="rounded-full bg-success-soft px-2 py-1 text-success">Upcoming</span></td></tr>)}</tbody></table></div>
+            </AdminPanel>
+            <AdminPanel title="Active Campaigns" icon={Megaphone} action={<SmallLink to="campaigns" label="View All" />}>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {campaigns.map((campaign, index) => {
+                  const images = [campaignImage, teamImage, childImage];
+                  return <article key={campaign.id} className="overflow-hidden rounded-md border border-border"><img src={images[index]} alt="" loading="lazy" width={1200} height={800} className="h-20 w-full object-cover" /><div className="p-2"><p className="truncate text-[10px] font-semibold text-heading">{campaign.title}</p><p className="mt-1 text-[9px] text-muted-foreground">{campaign.period}</p><span className="mt-2 inline-flex rounded-full bg-success-soft px-2 py-0.5 text-[9px] text-success">{campaign.state}</span><Button size="sm" variant="outline" className="mt-2 h-6 w-full text-[9px]" onClick={() => toast.success(`${campaign.title} opened for editing`)}>Edit</Button></div></article>;
+                })}
+              </div>
+            </AdminPanel>
+          </div>
+        </div>
+
+        <aside className="space-y-3">
+          <AdminPanel title="Website Controls" icon={Settings2}>
+            <div className="space-y-2.5">{controls.map((label) => <ToggleRow key={label} label={label} value={Boolean(siteControls[label])} onChange={() => toggle(setSiteControls, label)} />)}</div>
+          </AdminPanel>
+          <AdminPanel title="Homepage Sections" icon={Settings2} action={<span className="text-[9px] text-brand">Drag to reorder</span>}>
+            <div className="space-y-2">{sections.map((label) => <div key={label} className="flex items-center gap-2"><span className="min-w-0 flex-1 truncate text-[10px] font-medium text-heading">{label}</span><Switch aria-label={`Show ${label}`} checked={Boolean(homepageSections[label])} onCheckedChange={() => toggle(setHomepageSections, label)} className="scale-75"/><Button variant="outline" size="sm" className="h-5 px-2 text-[9px]" onClick={() => toast.success(`${label} opened for editing`)}>Edit</Button></div>)}</div>
+          </AdminPanel>
+          <AdminPanel title="Live Website Preview" icon={Image} action={<Button asChild variant="link" size="sm" className="h-auto p-0 text-[9px]"><Link to="/">View Full Site →</Link></Button>}>
+            <div className="h-52 overflow-hidden rounded-md border border-border bg-secondary">
+              <iframe title="BrightSmile live website preview" src="/" className="h-[780px] w-[1280px] origin-top-left scale-[0.205] border-0" />
+            </div>
+          </AdminPanel>
+        </aside>
+      </div>
+
+      <div className="fixed right-0 bottom-0 left-0 z-20 flex items-center justify-end gap-3 border-t border-border bg-card/95 px-5 py-3 shadow-panel backdrop-blur lg:left-52">
+        <span className="mr-auto hidden items-center gap-2 text-[10px] text-muted-foreground sm:flex"><Clock3 className="size-4 text-brand" /> Last published 2 minutes ago</span>
+        <Button variant="outline" onClick={() => toast.success("Website changes saved")}><Save className="size-4" /> Save Changes</Button>
+        <Button onClick={() => toast.success("BrightSmile website published successfully")}><Send className="size-4" /> Publish Website</Button>
+      </div>
     </div>
   );
+}
+
+function AdminPanel({ title, icon: Icon, action, children }: { title: string; icon: typeof BellRing; action?: React.ReactNode; children: React.ReactNode }) {
+  return <section className="rounded-lg border border-border bg-card shadow-card"><header className="flex h-10 items-center gap-2 border-b border-border px-3"><Icon className="size-4 text-brand" /><h2 className="text-xs font-bold text-heading">{title}</h2><div className="ml-auto">{action}</div></header><div className="p-3">{children}</div></section>;
+}
+
+function SmallLink({ to, label }: { to: string; label: string }) {
+  return <Button asChild variant="link" size="sm" className="h-auto p-0 text-[9px]"><Link to="/workspace/$role/$module" params={{ role: "website", module: to }}>{label} →</Link></Button>;
+}
+
+function ToggleRow({ label, value, onChange }: { label: string; value: boolean; onChange: () => void }) {
+  return <div className="flex items-center gap-2"><CheckCircle2 className="size-3.5 text-brand" /><span className="flex-1 text-[10px] font-medium text-heading">{label}</span><Switch aria-label={label} checked={value} onCheckedChange={onChange} className="scale-75"/><span className="w-4 text-[9px] text-success">{value ? "On" : "Off"}</span></div>;
+}
+
+function ChartLegend() {
+  return <div className="flex gap-2 text-[9px] text-muted-foreground"><span>● Articles</span><span className="text-teal">● Events</span><span className="text-violet">● Campaigns</span></div>;
 }
