@@ -1,7 +1,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { format } from "date-fns";
+import { format as formatDate } from "date-fns";
 
 /**
  * Export data to Excel file
@@ -42,7 +42,7 @@ export function exportToPDF(
   // Add metadata
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  doc.text(`Generated: ${format(new Date(), "PPP 'at' p")}`, 14, 28);
+  doc.text(`Generated: ${formatDate(new Date(), "PPP 'at' p")}`, 14, 28);
   doc.text(`BrightSmile Dental Care Centre`, 14, 34);
   
   // Add table
@@ -89,7 +89,7 @@ export function exportToPDF(
 export function exportAppointmentsReport(
   appointments: any[],
   format: "pdf" | "excel",
-  filename = `appointments-report-${format(new Date(), "yyyy-MM-dd")}`
+  filename = `appointments-report-${formatDate(new Date(), "yyyy-MM-dd")}`
 ) {
   const data = appointments.map((apt) => ({
     "Appointment ID": apt.id,
@@ -123,7 +123,7 @@ export function exportAppointmentsReport(
 export function exportPatientsReport(
   patients: any[],
   format: "pdf" | "excel",
-  filename = `patients-report-${format(new Date(), "yyyy-MM-dd")}`
+  filename = `patients-report-${formatDate(new Date(), "yyyy-MM-dd")}`
 ) {
   const data = patients.map((patient) => ({
     "Patient ID": patient.id,
@@ -158,7 +158,7 @@ export function exportFinancialReport(
   invoices: any[],
   payments: any[],
   format: "pdf" | "excel",
-  filename = `financial-report-${format(new Date(), "yyyy-MM-dd")}`
+  filename = `financial-report-${formatDate(new Date(), "yyyy-MM-dd")}`
 ) {
   const data = invoices.map((invoice) => {
     const invoicePayments = payments.filter((p) => p.invoiceNumber === invoice.number);
@@ -197,7 +197,7 @@ export function exportFinancialReport(
 export function exportPrescriptionsReport(
   prescriptions: any[],
   format: "pdf" | "excel",
-  filename = `prescriptions-report-${format(new Date(), "yyyy-MM-dd")}`
+  filename = `prescriptions-report-${formatDate(new Date(), "yyyy-MM-dd")}`
 ) {
   const data = prescriptions.map((rx) => ({
     "Prescription ID": rx.id,

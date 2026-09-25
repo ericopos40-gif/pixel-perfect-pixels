@@ -14,7 +14,8 @@ export const Route = createFileRoute("/workspace/$role")({
 function WorkspaceLayout() {
   const { role: roleSlug } = Route.useParams();
   const location = useLocation();
-  const role = getWorkspaceRole(roleSlug)!;
+  const role = getWorkspaceRole(roleSlug);
+  if (!role) return null;
 
   const moduleSlug = location.pathname.replace(`/workspace/${role.slug}`, "").replace(/^\//, "");
   const navItem = moduleSlug ? findNavItem(role, moduleSlug) : undefined;

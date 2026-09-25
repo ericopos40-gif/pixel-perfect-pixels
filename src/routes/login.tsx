@@ -8,7 +8,7 @@ import {
   Users,
   Calendar,
   Stethoscope,
-  Flask,
+  FlaskConical,
   Pill,
   DollarSign,
   Settings,
@@ -92,7 +92,7 @@ const roles = [
   {
     value: "laboratory",
     label: "Laboratory",
-    icon: Flask,
+    icon: FlaskConical,
     description: "Lab tests and results",
     color: "text-orange-600",
     bg: "bg-orange-100",
