@@ -1,5 +1,6 @@
-# BrightSmile Delivery Roadmap
+# Abancool Hospital Delivery Roadmap
 
+- [ ] Hospital conversion — rename the full system to Abancool Hospital and expand services, teams, roles, and workflows beyond Dental
 - [ ] Phase 1 — Shared design system, demo data layer, role switcher, responsive application shell, and public website foundation
 - [x] Reference match — Super Admin dashboard, public home, and public blog with connected visible actions
 - [ ] Phase 2 — Administrator, receptionist, dentist, accountant dashboards matching supplied references

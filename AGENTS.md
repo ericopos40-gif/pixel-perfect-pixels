@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Product architecture: Abancool Hospital is a multi-department general hospital; Dental remains a first-class department alongside outpatient, emergency, nursing, laboratory, pharmacy, radiology, maternity, pediatrics, surgery, finance, HR, and inventory, so shared patient, appointment, billing, and medical-record models must stay department-neutral.
